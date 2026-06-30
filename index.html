@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KX GAMES EOOD | Systems Design & Software R&D</title>
+    <meta name="description" content="Premier entity in Computer Systems Design, Software Development, and IT Consulting.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* DESIGN SYSTEM: APPLE DEVELOPER / WWDC AESTHETIC */
+        :root {
+            --bg-base: #000000;         /* True Black */
+            --bg-panel: rgba(28, 28, 30, 0.65); /* iOS Dark Gray with opacity */
+            --bg-panel-solid: #1c1c1e;
+            --accent-blue: #0A84FF;     /* iOS Blue */
+            --accent-purple: #5E5CE6;   /* iOS Indigo */
+            --accent-gradient: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            --text-main: #F5F5F7;       /* Apple Light Gray/White */
+            --text-muted: #86868B;      /* Apple Secondary Text */
+            --border-light: rgba(255, 255, 255, 0.1);
+            
+            --font-main: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --font-mono: 'SF Mono', 'Courier New', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-main);
+            color: var(--text-main);
+            background-color: var(--bg-base);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+        }
+
+        /* Subtle Background Glow */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -20%; left: -10%;
+            width: 70%; height: 70%;
+            background: radial-gradient(circle, rgba(10, 132, 255, 0.15) 0%, transparent 60%);
+            z-index: -2;
+            pointer-events: none;
+            filter: blur(80px);
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -20%; right: -10%;
+            width: 70%; height: 70%;
+            background: radial-gradient(circle, rgba(94, 92, 230, 0.15) 0%, transparent 60%);
+            z-index: -2;
+            pointer-events: none;
+            filter: blur(80px);
+        }
+
+        /* --- NAVIGATION --- */
+        nav {
+            position: fixed;
+            top: 0; width: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            padding: 16px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .logo {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        /* Clean Developer Icon (Code Brackets) */
+        .logo-icon {
+            width: 24px; height: 24px;
+            background: var(--accent-gradient);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 12px;
+            color: #fff;
+        }
+
+        .nav-links { display: flex; gap: 32px; font-weight: 400; font-size: 0.9rem;}
+        .nav-links a { text-decoration: none; color: var(--text-main); transition: opacity 0.3s; opacity: 0.8; }
+        .nav-links a:hover { opacity: 1; }
+
+        .btn-nav {
+            background: var(--text-main);
+            color: var(--bg-base) !important;
+            padding: 8px 20px;
+            border-radius: 980px; /* Apple Pill Shape */
+            font-weight: 500;
+            opacity: 1 !important;
+            transition: transform 0.2s;
+        }
+        .btn-nav:hover { transform: scale(1.05); }
+
+        /* --- HERO SECTION --- */
+        header {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 140px 5% 60px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            width: 100%;
+        }
+
+        .hero-tag {
+            display: inline-block;
+            font-family: var(--font-mono);
+            color: var(--accent-blue);
+            font-size: 0.85rem;
+            margin-bottom: 24px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        header h1 {
+            font-size: clamp(3.5rem, 6vw, 5.5rem);
+            line-height: 1.05;
+            font-weight: 700;
+            margin-bottom: 24px;
+            letter-spacing: -2px;
+        }
+
+        .text-gradient {
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        header p {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            margin-bottom: 40px;
+            max-width: 500px;
+            font-weight: 400;
+            letter-spacing: -0.3px;
+        }
+
+        .btn-primary {
+            display: inline-block;
+            background: var(--text-main);
+            color: var(--bg-base);
+            padding: 18px 36px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            border-radius: 980px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 30px rgba(255,255,255,0.1);
+        }
+
+        /* Abstract CSS Graphic: Floating Glass Architecture */
+        .hero-graphic {
+            position: relative;
+            height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            perspective: 1000px;
+        }
+
+        .glass-layer {
+            position: absolute;
+            width: 280px; height: 380px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+            transition: transform 0.5s ease;
+        }
+
+        .layer-1 { transform: rotateY(-20deg) translateZ(-100px) translateX(-50px); animation: float 6s ease-in-out infinite; }
+        .layer-2 { transform: rotateY(-10deg) translateZ(0px); background: rgba(10, 132, 255, 0.05); animation: float 6s ease-in-out infinite 1s; }
+        .layer-3 { transform: rotateY(0deg) translateZ(100px) translateX(50px); border: 1px solid rgba(94, 92, 230, 0.3); background: rgba(94, 92, 230, 0.05); animation: float 6s ease-in-out infinite 2s; }
+
+        @keyframes float {
+            0%, 100% { margin-top: 0; }
+            50% { margin-top: -20px; }
+        }
+
+        /* --- OPERATIONS GRID --- */
+        .section {
+            padding: 120px 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            margin-bottom: 60px;
+            text-align: left;
+        }
+
+        .section-header h2 {
+            font-size: 3rem;
+            color: var(--text-main);
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .service-card {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-light);
+            border-radius: 24px;
+            padding: 40px;
+            transition: all 0.4s;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        .service-card:hover {
+            border-color: rgba(255,255,255,0.3);
+            transform: translateY(-5px);
+        }
+
+        .card-icon {
+            width: 48px; height: 48px;
+            background: var(--bg-panel-solid);
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 24px;
+            color: var(--accent-blue);
+            font-size: 24px;
+        }
+
+        .service-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+            color: var(--text-main);
+            letter-spacing: -0.5px;
+            font-weight: 600;
+        }
+
+        .service-card p {
+            color: var(--text-muted);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        /* --- APP PROMO (SOFTWARE PUBLISHING) --- */
+        .app-promo {
+            background: var(--bg-panel-solid);
+            border: 1px solid var(--border-light);
+            border-radius: 32px;
+            padding: 80px 5%;
+            margin: 80px 0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .app-text h2 {
+            font-size: 3rem;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            letter-spacing: -1px;
+        }
+
+        .app-list { list-style: none; margin: 32px 0; }
+        .app-list li {
+            margin-bottom: 16px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-muted);
+        }
+        .app-list li::before {
+            content: '';
+            width: 6px; height: 6px;
+            background: var(--accent-blue);
+            border-radius: 50%;
+        }
+
+        /* Apple-style iPhone Mockup */
+        .mockup-phone {
+            width: 100%; max-width: 300px; height: 600px;
+            margin: 0 auto; background: #000;
+            border: 8px solid #2c2c2e; border-radius: 48px;
+            padding: 6px;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.8);
+            display: flex; flex-direction: column; z-index: 2;
+            position: relative;
+        }
+
+        /* Dynamic Island */
+        .dynamic-island {
+            position: absolute;
+            top: 14px; left: 50%;
+            transform: translateX(-50%);
+            width: 90px; height: 28px;
+            background: #000;
+            border-radius: 20px;
+            z-index: 10;
+        }
+
+        .phone-screen {
+            flex: 1; background: var(--bg-base);
+            border-radius: 36px; overflow: hidden;
+            display: flex; flex-direction: column;
+            border: 1px solid rgba(255,255,255,0.05);
+            background-image: radial-gradient(circle at top left, rgba(94, 92, 230, 0.2), transparent 50%);
+        }
+
+        .ui-header {
+            padding: 60px 20px 20px; /* Space for dynamic island */
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .ui-content { padding: 0 20px 20px; flex: 1; display: flex; flex-direction: column; gap: 16px; }
+        
+        .ui-module {
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 16px;
+            backdrop-filter: blur(10px);
+        }
+        .ui-module-title { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px;}
+        .ui-module-val { font-size: 1rem; font-weight: 500;}
+
+        /* --- VERIFICATION REGISTRY --- */
+        .registry-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 60px;
+        }
+
+        .data-panel {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-light);
+            border-radius: 24px;
+            padding: 40px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        .data-row {
+            margin-bottom: 24px; padding-bottom: 16px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .data-row:last-child { border: none; margin: 0; padding: 0; }
+
+        .data-label {
+            font-size: 0.85rem;
+            color: var(--text-muted); margin-bottom: 4px;
+            display: block;
+        }
+
+        .data-value {
+            font-size: 1.1rem; color: var(--text-main);
+            font-weight: 500;
+        }
+
+        form { display: flex; flex-direction: column; gap: 16px; }
+
+        input, textarea {
+            width: 100%; padding: 16px;
+            background: var(--bg-panel);
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            font-family: var(--font-main); color: var(--text-main);
+            font-size: 1rem; transition: all 0.3s;
+        }
+
+        input:focus, textarea:focus {
+            outline: none; border-color: var(--accent-blue);
+            background: rgba(10, 132, 255, 0.05);
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            border-top: 1px solid var(--border-light);
+            padding: 60px 5% 40px; margin-top: 80px;
+        }
+
+        .footer-grid {
+            max-width: 1400px; margin: 0 auto; display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px; margin-bottom: 60px;
+        }
+
+        .footer-col h4 {
+            color: var(--text-main);
+            margin-bottom: 20px; font-size: 0.9rem; font-weight: 600;
+        }
+        .footer-col ul { list-style: none; }
+        .footer-col li { margin-bottom: 12px; }
+        .footer-col a { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
+        .footer-col a:hover { color: var(--text-main); }
+
+        .copyright {
+            text-align: left; padding-top: 24px;
+            border-top: 1px solid var(--border-light);
+            color: var(--text-muted); font-size: 0.8rem;
+            max-width: 1400px; margin: 0 auto;
+        }
+
+        @media (max-width: 992px) {
+            .hero-grid, .app-promo, .registry-grid { grid-template-columns: 1fr; }
+            .nav-links { display: none; }
+            .hero-graphic { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">
+            <div class="logo-icon">&lt;/&gt;</div>
+            KX GAMES
+        </div>
+        <div class="nav-links">
+            <a href="#services">Architecture</a>
+            <a href="#app">Ecosystem</a>
+            <a href="#registry">Identity</a>
+            <a href="#contact" class="btn-nav">Developer Portal</a>
+        </div>
+    </nav>
+
+    <header>
+        <div class="hero-grid">
+            <div>
+                <div class="hero-tag">Computer Systems Design</div>
+                <h1>Engineering the <br><span class="text-gradient">Future of Software.</span></h1>
+                <p>KX GAMES EOOD specializes in advanced systems architecture, professional IT consulting, and scientific software research and development.</p>
+                <a href="#app" class="btn-primary">View App Ecosystem</a>
+            </div>
+            
+            <div class="hero-graphic">
+                <div class="glass-layer layer-1"></div>
+                <div class="glass-layer layer-2"></div>
+                <div class="glass-layer layer-3"></div>
+            </div>
+        </div>
+    </header>
+
+    <section id="services" class="section">
+        <div class="section-header">
+            <h2>Core Competencies.</h2>
+        </div>
+        <div class="services-grid">
+            <div class="service-card">
+                <div class="card-icon">01</div>
+                <h3>Systems Design</h3>
+                <p>Architecting scalable and secure computer systems. We build robust technical foundations that support next-generation software applications.</p>
+            </div>
+            <div class="service-card">
+                <div class="card-icon">02</div>
+                <h3>Scientific R&D</h3>
+                <p>Driving innovation through scientific research and development. We solve complex engineering problems for specialized digital environments.</p>
+            </div>
+            <div class="service-card">
+                <div class="card-icon">03</div>
+                <h3>IT Consulting</h3>
+                <p>Providing professional, scientific, and technical consulting. We guide organizations through intricate digital transformations and infrastructure scaling.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="app" class="section" style="padding-top: 0;">
+        <div class="app-promo">
+            <div class="app-text">
+                <div class="hero-tag">Verified Developer Entity</div>
+                <h2>KX App <br>Ecosystem.</h2>
+                <p style="font-size: 1.15rem; color: var(--text-muted); margin-bottom: 20px;">
+                    As a verified software publisher, <strong>KX GAMES EOOD</strong> develops and distributes proprietary applications across mobile platforms.
+                </p>
+                <p style="color: var(--text-muted);">
+                    Our mobile utilities and interactive clients are designed with a focus on privacy, performance, and seamless user experience, adhering to the highest platform guidelines.
+                </p>
+                
+                <ul class="app-list">
+                    <li>Native Mobile Engineering.</li>
+                    <li>Secure Cloud Integration.</li>
+                    <li>Official Publisher Status.</li>
+                    <li>Strict Data Privacy Protocols.</li>
+                </ul>
+            </div>
+            
+            <div class="mockup-phone">
+                <div class="dynamic-island"></div>
+                <div class="phone-screen">
+                    <div class="ui-header">Developer Tools</div>
+                    <div class="ui-content">
+                        
+                        <div class="ui-module" style="background: var(--accent-gradient);">
+                            <div class="ui-module-title" style="color: rgba(255,255,255,0.7);">SYSTEM STATUS</div>
+                            <div class="ui-module-val" style="font-size: 1.5rem; font-weight: 600;">Online & Stable</div>
+                        </div>
+
+                        <div class="ui-module">
+                            <div class="ui-module-title">PUBLISHER ENTITY</div>
+                            <div class="ui-module-val">KX Games EOOD</div>
+                        </div>
+
+                        <div class="ui-module">
+                            <div class="ui-module-title">ACTIVE ENVIRONMENT</div>
+                            <div class="ui-module-val" style="color: var(--accent-blue);">Production API v4.2</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="registry" class="section">
+        <div class="section-header">
+            <h2>Corporate Identity.</h2>
+        </div>
+        <div class="registry-grid">
+            
+            <div class="data-panel">
+                <div class="data-row">
+                    <span class="data-label">Legal Entity Name</span>
+                    <span class="data-value">KX GAMES EOOD</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">Key Principal</span>
+                    <span class="data-value">KALIN NIKOLOV</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">Industry Classification</span>
+                    <span class="data-value" style="font-size: 0.95rem;">
+                        • Computer Systems Design & Related Services<br>
+                        • Professional, Scientific, and Technical Services<br>
+                        • Computer Related Consulting Services<br>
+                        • Scientific Research and Development
+                    </span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">Registered Headquarters</span>
+                    <span class="data-value" style="font-size: 0.95rem;">17 Kishinev str. Lozenets Distr. Sofia,<br>Sofia (Capital), 1407 Bulgaria</span>
+                </div>
+                <div class="data-row" style="border: none;">
+                    <span class="data-label">Developer Support Contact</span>
+                    <span class="data-value"><a href="mailto:info@smsgames.cloud" style="color: var(--accent-blue); text-decoration: none;">info@smsgames.cloud</a></span>
+                </div>
+            </div>
+
+            <div id="contact">
+                <h3 style="font-size: 1.5rem; margin-bottom: 16px;">Contact Support</h3>
+                <p style="color: var(--text-muted); margin-bottom: 32px; font-size: 0.95rem;">For inquiries regarding app support, technical consulting, or enterprise architecture solutions, please reach out via our secure channel.</p>
+                
+                <form action="mailto:info@smsgames.cloud" method="POST" enctype="text/plain">
+                    <input type="text" placeholder="Full Name or Organization" required>
+                    <input type="email" placeholder="Email Address" required>
+                    <textarea placeholder="How can we help you?" rows="4" required></textarea>
+                    <button type="submit" style="background: var(--text-main); color: var(--bg-base); border: none; padding: 16px; border-radius: 12px; font-weight: 600; cursor: pointer; margin-top: 8px;">Submit Request</button>
+                </form>
+            </div>
+
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h4>KX GAMES EOOD</h4>
+                <p style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.6;">Architecting robust computer systems and delivering premium software research and development services globally.</p>
+            </div>
+            
+            <div class="footer-col">
+                <h4>Developer Resources</h4>
+                <ul>
+                    <li><a href="#">System Status</a></li>
+                    <li><a href="#">API Documentation</a></li>
+                    <li><a href="#">Report a Vulnerability</a></li>
+                    <li><a href="#">Publisher Identity</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h4>Legal & Privacy</h4>
+                <ul>
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Cookie Guidelines</a></li>
+                    <li><a href="#" style="color: var(--text-main);">Request Account & Data Deletion</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            &copy; 2026 KX GAMES EOOD. All rights reserved.
+        </div>
+    </footer>
+
+</body>
+</html>
